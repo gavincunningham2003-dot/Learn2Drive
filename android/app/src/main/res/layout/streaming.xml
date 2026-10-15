@@ -1,0 +1,75 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:padding="20dp"
+    android:background="#F5F5F5">
+
+    <!-- Status Text -->
+    <TextView
+        android:id="@+id/streamingStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Press Start to begin recording..."
+        android:textSize="20sp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:padding="10dp"
+        android:layout_marginBottom="30dp" />
+
+    <!-- Start Recording Button -->
+    <Button
+        android:id="@+id/btnStartRecording"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Start Recording"
+        android:textSize="18sp"
+        android:padding="15dp"
+        android:textColor="#FFFFFF"
+        android:background="#007BFF"
+        android:layout_marginBottom="15dp"/>
+
+    <!-- Stop Recording Button -->
+    <Button
+        android:id="@+id/btnStopRecording"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#DC3545"
+        android:padding="15dp"
+        android:text="Stop Recording"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:layout_marginBottom="15dp"/>
+
+    <!-- Send Files Button -->
+    <Button
+        android:id="@+id/btnSendFiles"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#28A745"
+        android:padding="15dp"
+        android:text="Process driving behaviour"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:layout_marginTop="15dp" />
+
+    <!-- Spacer to push button to bottom -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- Return to Home Button -->
+    <Button
+        android:id="@+id/btnReturnHome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#6C757D"
+        android:padding="15dp"
+        android:text="Return to Home"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:layout_marginTop="20dp"/>
+</LinearLayout>

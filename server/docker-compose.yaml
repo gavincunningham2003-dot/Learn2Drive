@@ -1,0 +1,22 @@
+# Local PostgreSQL instance used by incident_add.py and sql_tcp.py
+services:
+  postgres:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_USER: "Learner"
+      POSTGRES_PASSWORD: "Cars2025"
+      POSTGRES_DB: "Incidents"
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./postgresql.conf:/etc/postgresql/postgresql.conf:ro
+      - ./pg_hba.conf:/etc/postgresql/pg_hba.conf:ro
+    command:
+      - postgres
+      - -c
+      - config_file=/etc/postgresql/postgresql.conf
+
+volumes:
+  pgdata:

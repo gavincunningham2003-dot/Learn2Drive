@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Pipeline inputs/outputs dropped into server/ by the phone or by hand
+server/*.mp4
+server/sensor_data.csv
+server/gps_time_periods.csv
+server/detected_turns.csv
+server/departure_events.csv
+server/turn_transitions.csv
+
+# Android (android/.gitignore covers build output; these hold secrets / machine-specific paths)
+android/local.properties
+android/.idea/
+android/**/build/
+
+# Editors / OS
+.vscode/
+.DS_Store
+Thumbs.db
+~$*
