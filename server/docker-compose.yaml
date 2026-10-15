@@ -1,4 +1,4 @@
-# Local PostgreSQL instance used by incident_add.py and sql_tcp.py
+# Local PostgreSQL instance used by store_incidents.py and events_api.py
 services:
   postgres:
     image: postgres:13

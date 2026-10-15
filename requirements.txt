@@ -1,5 +1,5 @@
 pandas>=2.1
 numpy>=1.26,<2        # mediapipe 0.10.x requires NumPy 1.x
 opencv-python>=4.8
-mediapipe>=0.10,<0.11 # eyetrackingtest.py uses the legacy mp.solutions Face Mesh API
+mediapipe>=0.10,<0.11 # mirror_checks.py uses the legacy mp.solutions Face Mesh API
 psycopg2-binary>=2.9
