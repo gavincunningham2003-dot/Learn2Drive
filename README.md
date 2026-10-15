@@ -1,6 +1,6 @@
 # Learn2Drive – driving-test practice assistant
 
-[![tests](https://github.com/YOUR_USERNAME/Learn2Drive/actions/workflows/tests.yml/badge.svg)](https://github.com/YOUR_USERNAME/Learn2Drive/actions/workflows/tests.yml)
+[![tests](https://github.com/gavincunningham2003-dot/Learn2Drive/actions/workflows/tests.yml/badge.svg)](https://github.com/gavincunningham2003-dot/Learn2Drive/actions/workflows/tests.yml)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![Android](https://img.shields.io/badge/android-API%2027%2B-green)
 ![license](https://img.shields.io/badge/license-MIT-lightgrey)
