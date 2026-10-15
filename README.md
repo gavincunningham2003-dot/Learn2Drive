@@ -18,8 +18,8 @@ map, colour-coded by how well the driver handled it.
 *Turn detection running on the real sensor log in `sample_data/`. Regenerate with
 `python tools/plot_sample_drive.py`.*
 
-The full write-up is in [docs/Final_Year_Report.pdf](docs/Final_Year_Report.pdf) and the final
-presentation in [docs/Final_Presentation.pptx](docs/Final_Presentation.pptx).
+The final presentation is in [docs/Final_Presentation.pptx](docs/Final_Presentation.pptx).
+The full written report is available on request.
 
 ## What it detects
 
@@ -70,7 +70,7 @@ tests/         pytest unit tests for the pure-Python logic (run in CI on every p
 tools/         Helper scripts (README figure)
 sample_data/   A real sensor log from a test drive so steps 1–2 can be run without a phone
 database/      Earlier relational schema design from the interim stage (not used by the final pipeline)
-docs/          Final report, presentation and figures
+docs/          Presentation and figures
 ```
 
 ## Running the server
