@@ -1,9 +1,22 @@
 #!/usr/bin/env python3
+"""Step 3: detect lane departures from the rear-facing video.
+
+MobileNet-SSD (via OpenCV's DNN module) finds the largest car inside a trapezoid region of
+interest behind the learner. If that car sits more than 10% of the frame width off-centre for
+two seconds or more, the learner is assumed to have drifted out of lane. Detection is paused
+for a few seconds either side of each turn, where the view behind changes anyway.
+
+Set SHOW_PREVIEW=0 in the environment to run without OpenCV preview windows (e.g. on a server).
+"""
+import os
 import cv2
 import numpy as np
 import pandas as pd
 
+SHOW_PREVIEW = os.environ.get("SHOW_PREVIEW", "1") != "0"
+
 def load_turn_times(csv_path):
+    """Return the turn times in seconds from detected_turns.csv, or [] if unavailable."""
     try:
         df = pd.read_csv(csv_path)
     except FileNotFoundError:
@@ -19,7 +32,8 @@ def load_turn_times(csv_path):
         turn_times = []
     return turn_times
 
-def is_in_turn_window(current_time, turn_times, buffer=7):      #set time for when not to scheck lane location due to turning
+def is_in_turn_window(current_time, turn_times, buffer=7):
+    """True if current_time is within `buffer` seconds of any turn (lane checks are skipped there)."""
     for t in turn_times:
         if t - buffer <= current_time <= t + buffer:
             return True
@@ -31,6 +45,7 @@ def apply_roi(frame, roi_polygon):
     return cv2.bitwise_and(frame, frame, mask=mask)
 
 def detect_car_dnn(frame, net, conf_threshold=0.5):
+    """Return (x, y, w, h) of the largest detected car in the frame, or None."""
     (h, w) = frame.shape[:2]
     blob = cv2.dnn.blobFromImage(frame, 0.007843, (300, 300), (127.5, 127.5, 127.5))
     net.setInput(blob)
@@ -78,7 +93,8 @@ def main():
     if fps <= 0:
         fps = 30.0
 
-    cv2.namedWindow("Vehicle Detection", cv2.WINDOW_NORMAL)
+    if SHOW_PREVIEW:
+        cv2.namedWindow("Vehicle Detection", cv2.WINDOW_NORMAL)
     
     # For sustained departure:
     not_in_lane_start_time = None
@@ -156,9 +172,10 @@ def main():
         cv2.putText(frame, f"Time: {current_time:.2f}s", (50, 150),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.8, (200, 200, 200), 2)
         
-        cv2.imshow("Vehicle Detection", frame)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+        if SHOW_PREVIEW:
+            cv2.imshow("Vehicle Detection", frame)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
 
     cap.release()
     cv2.destroyAllWindows()

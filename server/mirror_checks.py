@@ -1,10 +1,22 @@
 #!/usr/bin/env python3
+"""Step 4: count observation checks around each turn from the driver-facing video.
+
+For the 15 seconds around every detected turn, MediaPipe Face Mesh tracks the driver's eye
+landmarks. The first 30 frames set a "looking straight ahead" baseline; afterwards each frame is
+classified as Left / Centre / Right by how far the face has moved from that baseline, and the
+number of Centre-to-Left and Centre-to-Right transitions is recorded. Fewer than two looks to a
+side is later flagged as an incident.
+
+Set SHOW_PREVIEW=0 in the environment to run without OpenCV preview windows (e.g. on a server).
+"""
 
 import cv2
 import mediapipe as mp
 import statistics
 import pandas as pd
 import os
+
+SHOW_PREVIEW = os.environ.get("SHOW_PREVIEW", "1") != "0"
 
 def rotate_frame_90_left(frame):
     return cv2.rotate(frame, cv2.ROTATE_90_COUNTERCLOCKWISE)
@@ -78,7 +90,8 @@ def process_turn_segment(
     
     # For debugging
     window_name = f"Segment [{start_time:.1f}-{end_time:.1f}]"
-    cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
+    if SHOW_PREVIEW:
+        cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
     
     mp_face_mesh = mp.solutions.face_mesh
     mp_drawing = mp.solutions.drawing_utils
@@ -179,19 +192,22 @@ def process_turn_segment(
                         cv2.FONT_HERSHEY_SIMPLEX,
                         1.0, (0, 0, 255), 2, cv2.LINE_AA)
             
-            cv2.imshow(window_name, rotated_frame)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+            if SHOW_PREVIEW:
+                cv2.imshow(window_name, rotated_frame)
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    break
             
             frame_count += 1
             current_frame += 1
     
     cap.release()
-    cv2.destroyWindow(window_name)
+    if SHOW_PREVIEW:
+        cv2.destroyWindow(window_name)
     
     return (center_to_left_count, center_to_right_count)
 
 def process_turns(csv_file, video_path, debug=False):
+    """Analyse every turn in csv_file and write the look counts to turn_transitions.csv."""
 
     if not os.path.exists(csv_file):
         print(f"[ERROR] CSV file not found: {csv_file}")

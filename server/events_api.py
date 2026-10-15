@@ -1,4 +1,8 @@
-# sql_tcp.py - serves the stored events to the phone's map screen as JSON over TCP
+"""Event API (port 9000).
+
+The phone's map screen sends the line GET_EVENTS and receives a 4-byte big-endian length
+followed by a JSON array of events (time, coordinates, type and look counts).
+"""
 
 import os
 import socket

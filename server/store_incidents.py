@@ -1,4 +1,11 @@
 #!/usr/bin/env python3
+"""Step 5: load the pipeline results into PostgreSQL.
+
+Rebuilds the detected_turns, departure_events and incidents tables, attaches the nearest GPS fix
+(within 30 s) to every event, and records an incident for each lane departure and for each turn
+where the driver looked left or right fewer than two times. events_api.py serves these tables to
+the phone.
+"""
 import os
 import pandas as pd
 import psycopg2

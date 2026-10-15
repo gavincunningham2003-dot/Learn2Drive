@@ -1,7 +1,14 @@
 #!/usr/bin/env python3
+"""Step 1: collapse the raw phone sensor log into one row per distinct GPS fix.
+
+The phone logs ~50 accelerometer rows per second but the GPS only updates about once a
+second, so many consecutive rows share the same coordinates. Grouping them gives the time
+span each fix was active and the average speed during it, which is all turn detection needs.
+"""
 import pandas as pd
 
 def process_sensor_data(input_csv="sensor_data.csv", output_csv="gps_time_periods.csv", tol=1e-7):
+    """Write a summary CSV with one row per contiguous run of identical GPS coordinates."""
     # Load sensor data from CSV
     df = pd.read_csv(input_csv)
 

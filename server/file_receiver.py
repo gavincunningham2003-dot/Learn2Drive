@@ -1,5 +1,9 @@
-# tcp_server.py - receives the three session files from the phone and runs the analysis pipeline
-import socket, subprocess, threading, time, os, sys
+"""TCP file receiver (port 5001).
+
+The phone uploads sensor_data.csv, front_video.mp4 and rear_video.mp4 one connection each.
+Once all three have arrived, run_pipeline.py is started in the background.
+"""
+import socket, subprocess, threading, os, sys
 
 SERVER_IP   = "0.0.0.0"
 SERVER_PORT = 5001
@@ -12,26 +16,16 @@ seen = set()
 lock = threading.Lock()      
 
 def run_pipeline():
-    steps = [
-        ["python", "sensordatacleanup.py"],  
-        ["python", "turndetect.py"],
-        ["python", "Lanetest.py"],
-        ["python", "eyetrackingtest.py"],
-        ["python", "incident_add.py"],
-    ]
+    """Run the analysis pipeline (run_pipeline.py) on the files in the current directory."""
     try:
-        for cmd in steps:
-            print(f"▶ running: {' '.join(cmd)}")
-            try:
-                subprocess.run(cmd, check=True)
-            except subprocess.CalledProcessError as e:
-                print(f"✖ step failed: {e}", file=sys.stderr)
-                return                   # abort the whole chain
-            time.sleep(2)                # 2-second pause between steps
+        print("▶ running analysis pipeline")
+        subprocess.run([sys.executable, "run_pipeline.py"], check=True)
         print("✓ pipeline finished")
+    except subprocess.CalledProcessError as e:
+        print(f"✖ pipeline failed: {e}", file=sys.stderr)
     finally:
         with lock:
-            seen.clear()                 # ready for next batch, even if a step failed
+            seen.clear()                 # ready for next batch, even if the run failed
 
 def recv_exact(conn, n):
     """Read exactly n bytes from the socket (recv may return fewer bytes than asked for)."""

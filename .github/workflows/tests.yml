@@ -1,0 +1,23 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # The unit tests only exercise the pure-Python logic, so the heavy
+      # OpenCV / MediaPipe dependencies are not needed here.
+      - name: Install test dependencies
+        run: pip install pandas "numpy<2" psycopg2-binary pytest
+
+      - name: Run tests
+        run: pytest -q

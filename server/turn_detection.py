@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
+"""Step 2: find turns from the GPS track.
+
+Each consecutive pair of GPS fixes gives a compass bearing. Bearings are smoothed with a short
+circular rolling mean (so 359° and 1° average to 0°, not 180°) and any change above the turn
+threshold is recorded as a turn. Detections within a second of each other are merged, since one
+physical turn usually spans several GPS fixes.
+"""
 import sys
 import pandas as pd
 import math
 import numpy as np
 
 def calculate_bearing(lat1, lon1, lat2, lon2):
-
+    """Initial compass bearing in degrees (0-360) from point 1 to point 2."""
     lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])
     dLon = lon2 - lon1
     x = math.sin(dLon) * math.cos(lat2)
@@ -14,7 +21,11 @@ def calculate_bearing(lat1, lon1, lat2, lon2):
     return (bearing + 360) % 360
 
 def detect_turns(gps_df, speed_threshold=0.1, turn_threshold=30, smoothing_window=3):
+    """Return a list of turn events {video_time_offset (ms), turn_type, turn_angle}.
 
+    Only segments faster than speed_threshold (m/s) are used, so stationary GPS jitter is ignored.
+    Times are relative to the start of the first moving segment.
+    """
     # Debug: show some information about the loaded data
     print("Full GPS data loaded:")
     print(gps_df.head())
@@ -79,7 +90,7 @@ def detect_turns(gps_df, speed_threshold=0.1, turn_threshold=30, smoothing_windo
     return events
 
 def merge_events(events, merge_threshold_ms=1000):
- 
+    """Merge events closer together than merge_threshold_ms into one averaged event."""
     if not events:
         return []
     
@@ -102,7 +113,7 @@ def merge_events(events, merge_threshold_ms=1000):
     return merged
 
 def merge_group(group):
-
+    """Average the time and angle of a group of events; the type comes from the first one."""
     avg_offset = sum(e["video_time_offset"] for e in group) / len(group)
     avg_angle = sum(e["turn_angle"] for e in group) / len(group)
     # Take the turn type from the first event 
@@ -113,7 +124,8 @@ def merge_group(group):
         "turn_angle": round(avg_angle, 2)
     }
 
-if __name__ == "__main__":
+def main():
+    """Read gps_time_periods.csv and write detected_turns.csv."""
     # Load the GPS summary data
     try:
         gps_df = pd.read_csv("gps_time_periods.csv")
@@ -150,3 +162,6 @@ if __name__ == "__main__":
         # still write an empty CSV so a stale file from a previous run is never picked up
         pd.DataFrame(columns=["video_time_offset", "turn_type", "turn_angle"]).to_csv("detected_turns.csv", index=False)
         print("\nNo turn events detected.")
+
+if __name__ == "__main__":
+    main()
